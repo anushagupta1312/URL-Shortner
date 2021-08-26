@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+
+    <!--fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
+
+    <title>Url Shortener</title>
+    <style>
+      *{
+        padding: 0px;
+        margin: 0px;
+        box-sizing: border-box;
+      }
+      body{
+        background-image: linear-gradient(to bottom, rgba(245, 246, 252, 0.52), rgba(117, 19, 93, 0.73)), url({{ STATIC_URL }}static/url/main-bg.jpg)  ;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        width: 100%;
+        height: 100vh;
+      }
+
+
+      .heading{
+        font-family: 'Permanent Marker', cursive;
+        padding-top: 20px;
+        font-size: 100px;
+
+      }
+      .side-text{
+        font-size: 30px;
+        color: white;
+        font-style: italic;
+      }
+     .main_area{
+        margin-top:10px;}
+
+      .typewriter h2 {
+        overflow: hidden; /* Ensures the content is not revealed until the animation */
+        border-right: .15em solid orange; /* The typwriter cursor */
+        white-space: nowrap; /* Keeps the content on a single line */
+        margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+        letter-spacing: .15em; /* Adjust as needed */
+        animation:
+        typing 3.5s steps(40, end),
+        blink-caret .75s step-end infinite;
+}
+
+      /* The typing effect */
+      @keyframes typing {
+        from { width: 0 }
+        to { width: 100% }
+      }
+
+      /* The typewriter cursor effect */
+      @keyframes blink-caret {
+        from, to { border-color: transparent }
+        50% { border-color: orange; }
+      }
+      .typewriter{
+        max-height:200px;
+        max-width:600px;
+        margin : 10px;
+      }
+      .card{
+         height:80px;
+         border-radius : 20px;
+         border-color: black;
+         border-width: 3px;
+         background-image : linear-gradient(black,grey);
+      }
+      #shorten{
+        margin:10px;
+        width:200px;
+        height:60px;
+        border-radius : 20px;
+         border-color: green;
+         border-width: 3px;
+         font-size:30px
+      }
+      .form-control{
+        background-image : linear-gradient(grey,white);
+        height : 70px;
+        border-radius : 20px;
+        border-color: black;
+        border-width: 3px;
+        }
+</style>
+  </head>
+  <body>
+    <div class="container-fluid text-center" id="main">
+      <div class="url">
+        <h1 class="display-3 heading ">URL SHORTENER</h1>
+      </div>
+      <div class="lower">
+        <figure class="text-center">
+          <figcaption class="blockquote-footer side-text">
+            Keep Going With <cite title="Source Title">shorter links</cite>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+
+    <div class="container main_area text-center " >
+        <div class="typewriter">
+          <h2>Enter the URL to be shortened</h2>
+        </div>
+        <form id = "post-form">
+          {% csrf_token %}
+        <div class="input-group mb-3 ">
+            <input type="text" id="link" name="link" class="form-control " placeholder="Original URL" aria-label="URL" aria-describedby="button-addon2">
+        </div>
+        <button type="submit" class="btn btn-success" id="shorten">Shorten</button>
+        </form>
+        <div class="card d-flex justify-content-center text-white bg-dark">
+          <div class="card-body">
+            <h3></h3>
+          </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <script>
+      var i = 0;
+      var txt = 'Enter the URL to be shortened'; /* The text */
+      var speed = 50; /* The speed/duration of the effect in milliseconds */
+
+      function typeWriter() {
+        if (i < txt.length) {
+          document.getElementById("demo").innerHTML += txt.charAt(i);
+          i++;
+          setTimeout(typeWriter, speed);
+        }
+
+      }
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).on('submit','#post-form',function(e){
+          e.preventDefault();
+
+          $.ajax({
+            type:'POST',
+            url:'/create',
+            data:{
+              link:$('#link').val(),
+              csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(data){
+                $('h3').html("my-urlshortner1.herokuapp.com/"+data)
+            }
+          });
+        });
+    </script>
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>
